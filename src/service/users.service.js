@@ -1,4 +1,5 @@
 const connectionPool = require('../app/service')
+const { encryptPassword } = require('../utils/crypto')
 
 async function getAllUsers() {
   const statement = 'SELECT * FROM users'
@@ -13,6 +14,7 @@ async function getUserByUsername(username) {
 }
 
 async function signUp(username, password, email) {
+  password = encryptPassword(password)
   const statement =
     'INSERT INTO users (username, password, email) VALUES (?, ?, ?)'
   const result = await connectionPool.execute(statement, [
