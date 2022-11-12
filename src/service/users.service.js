@@ -6,6 +6,12 @@ async function getAllUsers() {
   return result[0]
 }
 
+async function getUserByUsername(username) {
+  const statement = 'SELECT * FROM users WHERE username = ?'
+  const result = await connectionPool.execute(statement, [username])
+  return result[0]
+}
+
 async function signUp(username, password, email) {
   const statement =
     'INSERT INTO users (username, password, email) VALUES (?, ?, ?)'
@@ -17,4 +23,4 @@ async function signUp(username, password, email) {
   return result[0]
 }
 
-module.exports = { getAllUsers, signUp }
+module.exports = { getAllUsers, getUserByUsername, signUp }

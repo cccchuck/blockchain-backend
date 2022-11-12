@@ -7,9 +7,7 @@ class UsersController {
   }
 
   async signUp(ctx, next) {
-    console.log(ctx.request.body)
     const { username, password, email } = ctx.request.body
-    console.log(username, password, email)
     const result = await userService.signUp(username, password, email)
     ctx.body = result
   }
