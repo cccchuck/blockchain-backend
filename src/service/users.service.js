@@ -16,7 +16,7 @@ async function getUserByUsername(username) {
 async function getResetCodeByID(uid) {
   const statement = 'SELECT code, updateTime FROM user_code WHERE uid = ?'
   const result = await connectionPool.execute(statement, [uid])
-  return result[0]
+  return result[0][0]
 }
 
 async function setResetCodeByID(uid, code, exist) {
@@ -45,10 +45,20 @@ async function signUp(username, password, email) {
   return result[0]
 }
 
+async function resetPwd(uid, password) {
+  password = encryptPassword(password)
+  const statement = 'UPDATE users SET password = ? WHERE uid = ?'
+  const result = await connectionPool.execute(statement, [password, uid])
+
+  if (result[0].affectedRows) return true
+  return false
+}
+
 module.exports = {
   getAllUsers,
   getUserByUsername,
   getResetCodeByID,
   setResetCodeByID,
   signUp,
+  resetPwd,
 }

@@ -64,6 +64,21 @@ class UsersController {
 
     ctx.body = body
   }
+
+  async resetPwd(ctx, next) {
+    const body = { code: codes.SUCCESS, msg: types.SUCCESS }
+    const { password } = ctx.request.body
+    const { uid } = ctx.meta
+
+    const status = await usersService.resetPwd(uid, password)
+
+    if (!status) {
+      body.code = codes.FAILURE
+      body.msg = types.FAILURE
+    }
+
+    ctx.body = body
+  }
 }
 
 module.exports = new UsersController()

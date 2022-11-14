@@ -36,6 +36,18 @@ function errorHandle(error, ctx) {
       body.code = codes.SEND_CODE_FREQRUNED
       body.msg = types.SEND_CODE_FREQRUNED
       break
+    case types.USERNAME_OR_PASSWORD_OR_CODE_IS_EMPTY:
+      body.code = codes.USERNAME_OR_PASSWORD_OR_CODE_IS_EMPTY
+      body.msg = types.USERNAME_OR_PASSWORD_OR_CODE_IS_EMPTY
+      break
+    case types.CODE_INCORRECT:
+      body.code = codes.CODE_INCORRECT
+      body.msg = types.CODE_INCORRECT
+      break
+    case types.CODE_EXPIRED:
+      body.code = codes.CODE_EXPIRED
+      body.msg = types.CODE_EXPIRED
+      break
     default:
       body.code = codes.INTERNAL_FAILURE
       body.msg = types.INTERNAL_FAILURE

@@ -31,4 +31,10 @@ usersRouter.post(
   usersController.sendCode
 )
 
+usersRouter.post(
+  '/reset-pwd',
+  usersMiddleware.verifyResetPwd,
+  usersController.resetPwd
+)
+
 module.exports = usersRouter

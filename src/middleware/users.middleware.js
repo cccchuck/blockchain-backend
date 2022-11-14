@@ -62,18 +62,25 @@ async function verifySendCode(ctx, next) {
     return
   }
 
-  // 用户名与邮箱不匹配
+  // 用户不存在
   const user = await usersService.getUserByUsername(username)
+  if (!user) {
+    const err = new Error(types.USER_NOT_EXISTS)
+    ctx.app.emit('error', err, ctx)
+    return
+  }
+
+  // 用户名与邮箱不匹配
   if (email !== user.email) {
     const err = new Error(types.USERNAME_NOT_MATCH_EMAIL)
     ctx.app.emit('error', err, ctx)
     return
   }
 
-  const { uid } = await usersService.getUserByUsername(username)
-  const result = await usersService.getResetCodeByID(uid)
-  if (result.length) {
-    const { updateTime } = result[0]
+  const { uid } = user
+  const _user = await usersService.getResetCodeByID(uid)
+  if (_user) {
+    const { updateTime } = _user
     // 发送邮件过于频繁
     if (Date.now() - updateTime.getTime() < 60 * 1000) {
       const err = new Error(types.SEND_CODE_FREQRUNED)
@@ -82,7 +89,45 @@ async function verifySendCode(ctx, next) {
     }
   }
 
-  ctx.meta = { uid, exist: result.length > 0 }
+  ctx.meta = { uid, exist: user !== undefined }
+  await next()
+}
+
+async function verifyResetPwd(ctx, next) {
+  const { username, password, code } = ctx.request.body
+
+  // 用户名，密码或验证码内容为空
+  if (!username || !password || !code) {
+    const err = new Error(types.USERNAME_OR_EMAIL_IS_EMPTY)
+    ctx.app.emit('error', err, ctx)
+    return
+  }
+
+  // 用户不存在
+  const user = await usersService.getUserByUsername(username)
+  if (!user) {
+    const err = new Error(types.USER_NOT_EXISTS)
+    ctx.app.emit('error', err, ctx)
+    return
+  }
+
+  // 验证码错误
+  const { uid } = user
+  const { code: _code, updateTime } = await usersService.getResetCodeByID(uid)
+  if (code !== _code) {
+    const err = new Error(types.CODE_INCORRECT)
+    ctx.app.emit('error', err, ctx)
+    return
+  }
+
+  // 验证码过期
+  if (Date.now() - updateTime > 30 * 60 * 1000) {
+    const err = new Error(types.CODE_EXPIRED)
+    ctx.app.emit('error', err, ctx)
+    return
+  }
+
+  ctx.meta = { uid }
   await next()
 }
 
@@ -90,4 +135,5 @@ module.exports = {
   verifyUserSignUp,
   verifyUserSignIn,
   verifySendCode,
+  verifyResetPwd,
 }
