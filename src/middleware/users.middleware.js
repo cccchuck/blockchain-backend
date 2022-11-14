@@ -127,13 +127,46 @@ async function verifyResetPwd(ctx, next) {
     return
   }
 
+  // 新密码格式不符合要求
+  const reg = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[^\w\s]).{8,16}$/
+  if (!reg.test(password)) {
+    const err = new Error(types.PASSWORD_FORMAT_ERROR)
+    ctx.app.emit('error', err, ctx)
+    return
+  }
+
   ctx.meta = { uid }
   await next()
 }
 
-async function verifyUpdatePwd(ctx, next) {}
+async function verifyUpdatePwd(ctx, next) {
+  const { uid, oldPassword, newPassword } = ctx.request.body
 
-async function verifyUpdateInfo(ctx, next) {}
+  // uid ，旧密码或新密码为空
+  if (!uid || !oldPassword || !newPassword) {
+    const err = new Error(types.EITHER_OLDPASSWORD_OR_NEWPASSWORD_IS_EMPTY)
+    ctx.app.emit('error', err, ctx)
+    return
+  }
+
+  // 旧密码错误
+  const { password } = await usersService.getUserByUID(uid)
+  if (!comparePassword(oldPassword, password)) {
+    const err = new Error(types.OLDPASSWORD_ERROR)
+    ctx.app.emit('error', err, ctx)
+    return
+  }
+
+  // 新密码不符合规范
+  const reg = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[^\w\s]).{8,16}$/
+  if (!reg.test(newPassword)) {
+    const err = new Error(types.PASSWORD_FORMAT_ERROR)
+    ctx.app.emit('error', err, ctx)
+    return
+  }
+
+  await next()
+}
 
 module.exports = {
   verifyUserSignUp,
@@ -141,5 +174,4 @@ module.exports = {
   verifySendCode,
   verifyResetPwd,
   verifyUpdatePwd,
-  verifyUpdateInfo,
 }

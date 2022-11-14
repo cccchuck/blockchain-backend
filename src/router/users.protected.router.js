@@ -13,13 +13,7 @@ usersRouter.get('/get-all-user', usersController.getAllUser)
 usersRouter.post(
   '/update-pwd',
   usersMiddleware.verifyUpdatePwd,
-  usersController.updatePwd
-)
-
-usersRouter.post(
-  '/update-info',
-  usersMiddleware.verifyUpdateInfo,
-  usersController.updateInfo
+  usersController.updatePwd,
 )
 
 module.exports = usersRouter

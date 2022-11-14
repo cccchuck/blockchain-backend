@@ -12,9 +12,21 @@ const USERNAME_OR_PASSWORD_IS_INCORRECT = '用户名或密码错误'
 const USERNAME_OR_PASSWORD_IS_EMPTY = '用户名或密码不能为空'
 const USERNAME_OR_PASSWORD_OR_EMAIL_IS_EMPTY = '用户名，密码或邮箱不能为空'
 const USERNAME_OR_PASSWORD_OR_CODE_IS_EMPTY = '用户名，密码或验证码不能为空'
+const EITHER_OLDPASSWORD_OR_NEWPASSWORD_IS_EMPTY = '旧密码或新密码为空'
+const PASSWORD_FORMAT_ERROR = '新密码格式不正确'
+const OLDPASSWORD_ERROR = '旧密码错误'
+
+const TOEKN_ID_IS_EMPTY = '转入或转出 TokenID 为空'
+const TOKEN_NOT_EXISTS = '转入或转出 TokenID 不存在'
+const THE_TOKEN_NOT_EXISTS = '该 Token 不存在'
+const TOKEN_ID_OR_NUMBER_IS_EMPTY = '转出数量，转入或转出 TokenID 为空'
+const POOL_NOT_EXIST = '该交易对无流动性池子'
+const NOT_ENOUGH_BALANCE = '余额不足'
 
 const CODE_INCORRECT = '验证码错误'
 const CODE_EXPIRED = '验证码过期'
+
+const FOBIDDEN = '非法请求'
 
 module.exports = {
   SUCCESS,
@@ -31,4 +43,14 @@ module.exports = {
   USERNAME_OR_PASSWORD_OR_CODE_IS_EMPTY,
   CODE_INCORRECT,
   CODE_EXPIRED,
+  FOBIDDEN,
+  EITHER_OLDPASSWORD_OR_NEWPASSWORD_IS_EMPTY,
+  PASSWORD_FORMAT_ERROR,
+  OLDPASSWORD_ERROR,
+  TOEKN_ID_IS_EMPTY,
+  TOKEN_NOT_EXISTS,
+  POOL_NOT_EXIST,
+  TOKEN_ID_OR_NUMBER_IS_EMPTY,
+  NOT_ENOUGH_BALANCE,
+  THE_TOKEN_NOT_EXISTS,
 }

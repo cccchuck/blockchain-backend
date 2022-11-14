@@ -48,6 +48,46 @@ function errorHandle(error, ctx) {
       body.code = codes.CODE_EXPIRED
       body.msg = types.CODE_EXPIRED
       break
+    case types.FOBIDDEN:
+      body.code = codes.FOBIDDEN
+      body.msg = types.FOBIDDEN
+      break
+    case types.EITHER_OLDPASSWORD_OR_NEWPASSWORD_IS_EMPTY:
+      body.code = codes.EITHER_OLDPASSWORD_OR_NEWPASSWORD_IS_EMPTY
+      body.msg = types.EITHER_OLDPASSWORD_OR_NEWPASSWORD_IS_EMPTY
+      break
+    case types.OLDPASSWORD_ERROR:
+      body.code = codes.OLDPASSWORD_ERROR
+      body.msg = types.OLDPASSWORD_ERROR
+      break
+    case types.PASSWORD_FORMAT_ERROR:
+      body.code = codes.PASSWORD_FORMAT_ERROR
+      body.msg = types.PASSWORD_FORMAT_ERROR
+      break
+    case types.TOEKN_ID_IS_EMPTY:
+      body.code = codes.TOEKN_ID_IS_EMPTY
+      body.msg = types.TOEKN_ID_IS_EMPTY
+      break
+    case types.TOKEN_NOT_EXISTS:
+      body.code = codes.TOKEN_NOT_EXISTS
+      body.msg = types.TOKEN_NOT_EXISTS
+      break
+    case types.POOL_NOT_EXIST:
+      body.code = codes.POOL_NOT_EXIST
+      body.msg = types.POOL_NOT_EXIST
+      break
+    case types.TOKEN_ID_OR_NUMBER_IS_EMPTY:
+      body.code = codes.TOKEN_ID_OR_NUMBER_IS_EMPTY
+      body.msg = types.TOKEN_ID_OR_NUMBER_IS_EMPTY
+      break
+    case types.NOT_ENOUGH_BALANCE:
+      body.code = codes.NOT_ENOUGH_BALANCE
+      body.msg = types.NOT_ENOUGH_BALANCE
+      break
+    case types.THE_TOKEN_NOT_EXISTS:
+      body.code = codes.THE_TOKEN_NOT_EXISTS
+      body.msg = types.THE_TOKEN_NOT_EXISTS
+      break
     default:
       body.code = codes.INTERNAL_FAILURE
       body.msg = types.INTERNAL_FAILURE

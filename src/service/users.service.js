@@ -1,10 +1,16 @@
 const connectionPool = require('../app/service')
-const { encryptPassword, comparePassword } = require('../utils/crypto')
+const { encryptPassword } = require('../utils/crypto')
 
 async function getAllUsers() {
   const statement = 'SELECT * FROM users'
   const result = await connectionPool.execute(statement)
   return result[0]
+}
+
+async function getUserByUID(uid) {
+  const statement = 'SELECT * FROM users WHERE uid = ?'
+  const result = await connectionPool.execute(statement, [uid])
+  return result[0][0]
 }
 
 async function getUserByUsername(username) {
@@ -54,11 +60,17 @@ async function resetPwd(uid, password) {
   return false
 }
 
+async function updatePwd(uid, password) {
+  return await resetPwd(uid, password)
+}
+
 module.exports = {
   getAllUsers,
+  getUserByUID,
   getUserByUsername,
   getResetCodeByID,
   setResetCodeByID,
   signUp,
   resetPwd,
+  updatePwd,
 }
