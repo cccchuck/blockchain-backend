@@ -17,9 +17,9 @@ const connectionPool = mysql2.createPool({
 
 connectionPool.getConnection((err, con) => {
   if (!err) {
-    console.log('Connect Successful')
+    console.log('数据库连接成功')
   } else {
-    console.log('Connect Failure')
+    console.log('数据库连接失败')
   }
 })
 

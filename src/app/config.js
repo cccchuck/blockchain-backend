@@ -4,6 +4,9 @@ dotenv.config()
 
 const {
   PORT,
+  SECRET,
+  EMAIL_USER,
+  EMAIL_PASS,
   MYSQL_HOST,
   MYSQL_PORT,
   MYSQL_USER,
@@ -13,6 +16,9 @@ const {
 
 module.exports = {
   PORT,
+  SECRET,
+  EMAIL_USER,
+  EMAIL_PASS,
   MYSQL_HOST,
   MYSQL_PORT,
   MYSQL_USER,

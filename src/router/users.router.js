@@ -1,4 +1,7 @@
 const Router = require('@koa/router')
+const koaJwt = require('koa-jwt')
+
+const { SECRET } = require('../app/config')
 
 const usersController = require('../controller/users.controller')
 
@@ -10,6 +13,22 @@ const usersRouter = new Router({
 
 usersRouter.get('/get-all-user', usersController.getAllUser)
 
-usersRouter.post('/sign-up', usersMiddleware.verifyUser, usersController.signUp)
+usersRouter.post(
+  '/sign-up',
+  usersMiddleware.verifyUserSignUp,
+  usersController.signUp
+)
+
+usersRouter.post(
+  '/sign-in',
+  usersMiddleware.verifyUserSignIn,
+  usersController.signIn
+)
+
+usersRouter.post(
+  '/send-code',
+  usersMiddleware.verifySendCode,
+  usersController.sendCode
+)
 
 module.exports = usersRouter

@@ -1,31 +1,46 @@
-const { type } = require('os')
 const types = require('./constants')
+const codes = require('./code')
 
 function errorHandle(error, ctx) {
-  let status
   let body = {
-    errCode: null,
-    errMsg: null,
+    code: null,
+    msg: null,
   }
 
   switch (error.message) {
     case types.USERNAME_OR_PASSWORD_OR_EMAIL_IS_EMPTY:
-      status = 400
-      body.errCode = 400
-      body.errMsg = '用户名，密码或邮箱不能为空'
+      body.code = codes.USERNAME_OR_PASSWORD_OR_EMAIL_IS_EMPTY
+      body.msg = types.USERNAME_OR_PASSWORD_OR_EMAIL_IS_EMPTY
       break
     case types.USER_ALREADY_EXISTS:
-      status = 409
-      body.errCode = 409
-      body.errMsg = '该用户已存在'
+      body.code = codes.USER_ALREADY_EXISTS
+      body.msg = types.USER_ALREADY_EXISTS
+      break
+    case types.USER_NOT_EXISTS:
+      body.code = codes.USER_NOT_EXISTS
+      body.msg = types.USER_NOT_EXISTS
+      break
+    case types.USERNAME_OR_PASSWORD_IS_INCORRECT:
+      body.code = codes.USERNAME_OR_PASSWORD_IS_INCORRECT
+      body.msg = types.USERNAME_OR_PASSWORD_IS_INCORRECT
+      break
+    case types.USERNAME_OR_EMAIL_IS_EMPTY:
+      body.code = codes.USERNAME_OR_EMAIL_IS_EMPTY
+      body.msg = types.USERNAME_OR_EMAIL_IS_EMPTY
+      break
+    case types.USERNAME_NOT_MATCH_EMAIL:
+      body.code = codes.USERNAME_NOT_MATCH_EMAIL
+      body.msg = types.USERNAME_NOT_MATCH_EMAIL
+      break
+    case types.SEND_CODE_FREQRUNED:
+      body.code = codes.SEND_CODE_FREQRUNED
+      body.msg = types.SEND_CODE_FREQRUNED
       break
     default:
-      status = 400
-      body.errCode = 400
-      body.errMsg = '请求出错'
+      body.code = codes.INTERNAL_FAILURE
+      body.msg = types.INTERNAL_FAILURE
   }
 
-  ctx.status = status
   ctx.body = body
 }
 
