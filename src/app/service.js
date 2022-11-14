@@ -1,4 +1,4 @@
-const mysql2 = require('mysql2')
+const mysql2 = require('mysql2/promise')
 const {
   MYSQL_HOST,
   MYSQL_PORT,
@@ -15,12 +15,4 @@ const connectionPool = mysql2.createPool({
   database: MYSQL_DATABASE,
 })
 
-connectionPool.getConnection((err, con) => {
-  if (!err) {
-    console.log('数据库连接成功')
-  } else {
-    console.log('数据库连接失败')
-  }
-})
-
-module.exports = connectionPool.promise()
+module.exports = connectionPool

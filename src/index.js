@@ -19,5 +19,5 @@ app.use(protectedRouter.allowedMethods())
 app.on('error', errorHandle)
 
 app.listen(PORT, () => {
-  console.log(`服务器在启动成功: http://localhost:${PORT}`)
+  console.log(`服务器启动成功: http://localhost:${PORT}`)
 })

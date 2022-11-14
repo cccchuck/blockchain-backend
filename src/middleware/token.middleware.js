@@ -67,7 +67,7 @@ async function verifySwap(ctx, next) {
     uid,
     fromTokenId
   )
-  if (!userBalance || userBalance < fromTokenNumber) {
+  if (!userBalance || userBalance.balance < fromTokenNumber) {
     const err = new Error(types.NOT_ENOUGH_BALANCE)
     ctx.app.emit('error', err, ctx)
     return

@@ -30,107 +30,136 @@ async function swapToken(
   uid,
   pool
 ) {
-  // 更新流动性池子
-  let statement =
-    'UPDATE pool SET fromTokenNumber = ?, toTokenNumber = ? WHERE fromTokenId = ? AND toTokenId = ?'
-  let result = await connectionPool.execute(statement, [
-    pool.fromTokenNumber - fromTokenNumber,
-    pool.toTokenNumber + toTokenNumber,
-    fromTokenId,
-    toTokenId,
-  ])
-  if (!result[0].affectedRows) return false
+  const connection = await connectionPool.getConnection()
+  await connection.beginTransaction()
 
-  result = await connectionPool.execute(statement, [
-    pool.toTokenNumber + toTokenNumber,
-    pool.fromTokenNumber - fromTokenNumber,
-    toTokenId,
-    fromTokenId,
-  ])
-  if (!result[0].affectedRows) return false
+  try {
+    // 更新流动性池子
+    let statement =
+      'UPDATE pool SET fromTokenNumber = ?, toTokenNumber = ? WHERE fromTokenId = ? AND toTokenId = ?'
+    let result = await connection.execute(statement, [
+      pool.fromTokenNumber - fromTokenNumber,
+      pool.toTokenNumber + toTokenNumber,
+      fromTokenId,
+      toTokenId,
+    ])
+    if (!result[0].affectedRows) new Error('Update Pool Failure')
 
-  // 更新用户余额
-  statement =
-    'SELECT balance FROM user_balance WHERE uid = ? AND (tokenId = ? or tokenId = ?)'
-  result = await connectionPool.execute(statement, [
-    uid,
-    fromTokenId,
-    toTokenId,
-  ])
-  if (!result[0][0]) return false
-  let { balance: fromTokenBalance } = result[0][0]
-  let { balance: toTokenBalance } = result[0][1]
-  fromTokenBalance -= fromTokenNumber
-  toTokenBalance += toTokenNumber
+    result = await connection.execute(statement, [
+      pool.toTokenNumber + toTokenNumber,
+      pool.fromTokenNumber - fromTokenNumber,
+      toTokenId,
+      fromTokenId,
+    ])
+    if (!result[0].affectedRows) new Error('Update Pool 2 Failure')
 
-  statement =
-    'UPDATE user_balance SET balance = ? WHERE uid = ? AND tokenId = ?'
-  result = await connectionPool.execute(statement, [
-    fromTokenBalance,
-    uid,
-    fromTokenId,
-  ])
-  if (!result[0].affectedRows) return false
-  result = await connectionPool.execute(statement, [
-    toTokenBalance,
-    uid,
-    toTokenId,
-  ])
-  if (!result[0].affectedRows) return false
+    // 更新用户余额
+    statement = 'SELECT balance FROM user_balance WHERE uid = ? AND tokenId = ?'
+    result = await connection.execute(statement, [uid, fromTokenId])
+    if (!result[0][0]) new Error('Select FromTokenBalance Failure')
 
-  return true
+    let { balance: fromTokenBalance } = result[0][0]
+    fromTokenBalance -= fromTokenNumber
+    statement =
+      'UPDATE user_balance SET balance = ? WHERE uid = ? AND tokenId = ?'
+    result = await connection.execute(statement, [
+      fromTokenBalance,
+      uid,
+      fromTokenId,
+    ])
+    if (!result[0].affectedRows) new Error('Update FromTokenBalance Failure')
+
+    statement = 'SELECT balance FROM user_balance WHERE uid = ? AND tokenId = ?'
+    result = await connection.execute(statement, [uid, toTokenId])
+    if (!result[0][0]) new Error('Select ToTokenBalance Failure')
+
+    let { balance: toTokenBalance } = result[0][0]
+    toTokenBalance += toTokenNumber
+    statement =
+      'UPDATE user_balance SET balance = ? WHERE uid = ? AND tokenId = ?'
+    result = await connection.execute(statement, [
+      toTokenBalance,
+      uid,
+      toTokenId,
+    ])
+    if (!result[0].affectedRows) new Error('Update ToTokenBalance Failure')
+
+    await connection.commit()
+    return true
+  } catch (error) {
+    await connection.rollback()
+    return false
+  }
 }
 
 async function stake(uid, tokenId, tokenNumber) {
-  let statement = 'SELECT APY FROM stake WHERE tokenId = ?'
-  let result = await connectionPool.execute(statement, [tokenId])
-  if (!result[0][0]) return false
-  const { APY } = result[0][0]
-  const stakeTime = new Date()
+  const connection = await connectionPool.getConnection()
+  await connection.beginTransaction()
 
-  statement =
-    'INSERT INTO user_stake (uid, tokenId, tokenNum, stakeTime, APY) VALUES (?, ?, ?, ?, ?)'
-  result = await connectionPool.execute(statement, [
-    uid,
-    tokenId,
-    tokenNumber,
-    stakeTime,
-    APY,
-  ])
-  if (!result[0].affectedRows) return false
+  try {
+    let statement = 'SELECT APY FROM stake WHERE tokenId = ?'
+    let result = await connection.execute(statement, [tokenId])
+    if (!result[0][0]) new Error('Select APY Failure')
+    const { APY } = result[0][0]
+    const stakeTime = new Date()
 
-  statement = 'SELECT balance FROM user_balance WHERE uid = ? AND tokenId = ?'
-  result = await connectionPool.execute(statement, [uid, tokenId])
-  if (!result[0][0]) return false
+    statement =
+      'INSERT INTO user_stake (uid, tokenId, tokenNum, stakeTime, APY) VALUES (?, ?, ?, ?, ?)'
+    result = await connection.execute(statement, [
+      uid,
+      tokenId,
+      tokenNumber,
+      stakeTime,
+      APY,
+    ])
+    if (!result[0].affectedRows) new Error('Insert Stake Failure')
 
-  let { balance } = result[0][0]
-  balance -= tokenNumber
-  statement =
-    'UPDATE user_balance SET balance = ? WHERE uid = ? AND tokenId = ?'
-  result = await connectionPool.execute(statement, [balance, uid, tokenId])
-  if (!result[0].affectedRows) return false
+    statement = 'SELECT balance FROM user_balance WHERE uid = ? AND tokenId = ?'
+    result = await connection.execute(statement, [uid, tokenId])
+    if (!result[0][0]) new Error('Select Balance Failure')
 
-  return true
+    let { balance } = result[0][0]
+    balance -= tokenNumber
+    statement =
+      'UPDATE user_balance SET balance = ? WHERE uid = ? AND tokenId = ?'
+    result = await connection.execute(statement, [balance, uid, tokenId])
+    if (!result[0].affectedRows) new Error('Update Balance Failure')
+
+    await connection.commit()
+    return true
+  } catch (error) {
+    await connection.rollback()
+    return false
+  }
 }
 
 async function unstake(uid, tokenId, tokenNum, stakeId) {
-  let statement =
-    'SELECT balance FROM user_balance WHERE uid = ? AND tokenId = ?'
-  let result = await connectionPool.execute(statement, [uid, tokenId])
-  if (!result[0][0]) return false
+  const connection = await connectionPool.getConnection()
+  await connection.beginTransaction()
 
-  let { balance } = result[0][0]
-  balance += tokenNum
-  statement =
-    'UPDATE user_balance SET balance = ? WHERE uid = ? AND tokenId = ?'
-  result = await connectionPool.execute(statement, [balance, uid, tokenId])
-  if (!result[0].affectedRows) return false
+  try {
+    let statement =
+      'SELECT balance FROM user_balance WHERE uid = ? AND tokenId = ?'
+    let result = await connection.execute(statement, [uid, tokenId])
+    if (!result[0][0]) new Error('Select Balance Failure')
 
-  statement = 'DELETE FROM user_stake WHERE id = ?'
-  result = await connectionPool.execute(statement, [stakeId])
-  if (!result[0].affectedRows) return false
+    let { balance } = result[0][0]
+    balance += tokenNum
+    statement =
+      'UPDATE user_balance SET balance = ? WHERE uid = ? AND tokenId = ?'
+    result = await connection.execute(statement, [balance, uid, tokenId])
+    if (!result[0].affectedRows) new Error('Update user_balance Failure')
 
-  return true
+    statement = 'DELETE FROM user_stake WHERE id = ?'
+    result = await connection.execute(statement, [stakeId])
+    if (!result[0].affectedRows) new Error('Delete user_stake Failure')
+
+    await connection.commit()
+    return true
+  } catch (error) {
+    await connection.rollback()
+    return false
+  }
 }
 
 async function getStaked(uid) {
