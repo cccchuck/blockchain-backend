@@ -34,10 +34,9 @@ class UsersController {
 
   async signIn(ctx, next) {
     const { username } = ctx.request.body
-    const { id } = await usersService.getUserByUsername(username)
+    const { uid } = await usersService.getUserByUsername(username)
 
-    const token = jwt.sign(id, SECRET, { expiresIn: '2h' })
-
+    const token = jwt.sign({ uid }, SECRET, { expiresIn: '2h' })
     ctx.set('Authorization', token)
     ctx.body = {
       code: codes.SUCCESS,
@@ -79,6 +78,10 @@ class UsersController {
 
     ctx.body = body
   }
+
+  async updatePwd(ctx, next) {}
+
+  async updateInfo(ctx, next) {}
 }
 
 module.exports = new UsersController()

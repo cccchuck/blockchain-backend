@@ -131,9 +131,15 @@ async function verifyResetPwd(ctx, next) {
   await next()
 }
 
+async function verifyUpdatePwd(ctx, next) {}
+
+async function verifyUpdateInfo(ctx, next) {}
+
 module.exports = {
   verifyUserSignUp,
   verifyUserSignIn,
   verifySendCode,
   verifyResetPwd,
+  verifyUpdatePwd,
+  verifyUpdateInfo,
 }

@@ -1,12 +1,19 @@
 const Router = require('@koa/router')
 
-const usersRouter = require('./users.router')
+const usersUnprotectedRouter = require('./users.unprotected.router')
+const usersProtectedRouter = require('./users.protected.router')
 
 const unprotectedRouter = new Router()
 const protectedRouter = new Router()
 
-unprotectedRouter.use(usersRouter.routes(), usersRouter.allowedMethods())
+unprotectedRouter.use(
+  usersUnprotectedRouter.routes(),
+  usersUnprotectedRouter.allowedMethods()
+)
 
-console.log(unprotectedRouter)
+protectedRouter.use(
+  usersProtectedRouter.routes(),
+  usersProtectedRouter.allowedMethods()
+)
 
 module.exports = { unprotectedRouter, protectedRouter }

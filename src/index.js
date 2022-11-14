@@ -2,16 +2,19 @@ const { koaBody } = require('koa-body')
 const koaJwt = require('koa-jwt')
 
 const app = require('./app')
-const config = require('./app/config')
-const usersRouter = require('./router/users.router')
+const { PORT, SECRET } = require('./app/config')
+const { unprotectedRouter, protectedRouter } = require('./router')
 const errorHandle = require('./app/errorHandle')
 
 app.use(koaBody())
-app.use(usersRouter.routes())
-app.use(usersRouter.allowedMethods())
+app.use(unprotectedRouter.routes())
+app.use(unprotectedRouter.allowedMethods())
+app.use(koaJwt({ secret: SECRET }))
+app.use(protectedRouter.routes())
+app.use(protectedRouter.allowedMethods())
 
 app.on('error', errorHandle)
 
-app.listen(config.PORT, () => {
-  console.log(`服务器在启动成功: http://localhost:${config.PORT}`)
+app.listen(PORT, () => {
+  console.log(`服务器在启动成功: http://localhost:${PORT}`)
 })

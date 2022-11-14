@@ -1,7 +1,4 @@
 const Router = require('@koa/router')
-const koaJwt = require('koa-jwt')
-
-const { SECRET } = require('../app/config')
 
 const usersController = require('../controller/users.controller')
 
@@ -10,8 +7,6 @@ const usersMiddleware = require('../middleware/users.middleware')
 const usersRouter = new Router({
   prefix: '/users',
 })
-
-usersRouter.get('/get-all-user', usersController.getAllUser)
 
 usersRouter.post(
   '/sign-up',
