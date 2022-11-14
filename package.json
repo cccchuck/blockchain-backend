@@ -18,6 +18,8 @@
     "koa": "^2.13.4",
     "koa-body": "^6.0.1",
     "koa-jwt": "^4.0.3",
+    "koa-logger": "^3.2.1",
+    "log4js": "^6.7.0",
     "mysql2": "^2.3.3",
     "nodemailer": "^6.8.0"
   },
@@ -25,6 +27,7 @@
     "@types/bcryptjs": "^2.4.2",
     "@types/jsonwebtoken": "^8.5.9",
     "@types/koa__router": "^12.0.0",
+    "@types/koa-logger": "^3.1.2",
     "@types/node": "^18.11.9",
     "@types/nodemailer": "^6.4.6",
     "nodemon": "^2.0.20"

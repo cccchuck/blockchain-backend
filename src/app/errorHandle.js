@@ -1,5 +1,6 @@
 const types = require('./constants')
 const codes = require('./code')
+const { loggerError } = require('../middleware/logger')
 
 function errorHandle(error, ctx) {
   let body = {
@@ -111,6 +112,8 @@ function errorHandle(error, ctx) {
   }
 
   ctx.body = body
+
+  loggerError.error(`${ctx.method} ${ctx.url} ${ctx.status} - ${error.message}`)
 }
 
 module.exports = errorHandle
