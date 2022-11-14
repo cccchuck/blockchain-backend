@@ -8,10 +8,6 @@ function errorHandle(error, ctx) {
   }
 
   switch (error.message) {
-    case types.USERNAME_OR_PASSWORD_OR_EMAIL_IS_EMPTY:
-      body.code = codes.USERNAME_OR_PASSWORD_OR_EMAIL_IS_EMPTY
-      body.msg = types.USERNAME_OR_PASSWORD_OR_EMAIL_IS_EMPTY
-      break
     case types.USER_ALREADY_EXISTS:
       body.code = codes.USER_ALREADY_EXISTS
       body.msg = types.USER_ALREADY_EXISTS
@@ -20,25 +16,30 @@ function errorHandle(error, ctx) {
       body.code = codes.USER_NOT_EXISTS
       body.msg = types.USER_NOT_EXISTS
       break
-    case types.USERNAME_OR_PASSWORD_IS_INCORRECT:
-      body.code = codes.USERNAME_OR_PASSWORD_IS_INCORRECT
-      body.msg = types.USERNAME_OR_PASSWORD_IS_INCORRECT
+    case types.USERNAME_NOT_MATCH_EMAIL:
+      body.code = codes.USERNAME_NOT_MATCH_EMAIL
+      body.msg = types.USERNAME_NOT_MATCH_EMAIL
       break
     case types.USERNAME_OR_EMAIL_IS_EMPTY:
       body.code = codes.USERNAME_OR_EMAIL_IS_EMPTY
       body.msg = types.USERNAME_OR_EMAIL_IS_EMPTY
       break
-    case types.USERNAME_NOT_MATCH_EMAIL:
-      body.code = codes.USERNAME_NOT_MATCH_EMAIL
-      body.msg = types.USERNAME_NOT_MATCH_EMAIL
+    case types.USERNAME_OR_PASSWORD_IS_INCORRECT:
+      body.code = codes.USERNAME_OR_PASSWORD_IS_INCORRECT
+      body.msg = types.USERNAME_OR_PASSWORD_IS_INCORRECT
       break
-    case types.SEND_CODE_FREQRUNED:
-      body.code = codes.SEND_CODE_FREQRUNED
-      body.msg = types.SEND_CODE_FREQRUNED
+    case types.USERNAME_OR_PASSWORD_OR_EMAIL_IS_EMPTY:
+      body.code = codes.USERNAME_OR_PASSWORD_OR_EMAIL_IS_EMPTY
+      body.msg = types.USERNAME_OR_PASSWORD_OR_EMAIL_IS_EMPTY
       break
     case types.USERNAME_OR_PASSWORD_OR_CODE_IS_EMPTY:
       body.code = codes.USERNAME_OR_PASSWORD_OR_CODE_IS_EMPTY
       body.msg = types.USERNAME_OR_PASSWORD_OR_CODE_IS_EMPTY
+      break
+
+    case types.SEND_CODE_FREQRUNED:
+      body.code = codes.SEND_CODE_FREQRUNED
+      body.msg = types.SEND_CODE_FREQRUNED
       break
     case types.CODE_INCORRECT:
       body.code = codes.CODE_INCORRECT
@@ -64,6 +65,14 @@ function errorHandle(error, ctx) {
       body.code = codes.PASSWORD_FORMAT_ERROR
       body.msg = types.PASSWORD_FORMAT_ERROR
       break
+    case types.POOL_NOT_EXIST:
+      body.code = codes.POOL_NOT_EXIST
+      body.msg = types.POOL_NOT_EXIST
+      break
+    case types.NOT_ENOUGH_BALANCE:
+      body.code = codes.NOT_ENOUGH_BALANCE
+      body.msg = types.NOT_ENOUGH_BALANCE
+      break
     case types.TOEKN_ID_IS_EMPTY:
       body.code = codes.TOEKN_ID_IS_EMPTY
       body.msg = types.TOEKN_ID_IS_EMPTY
@@ -72,21 +81,29 @@ function errorHandle(error, ctx) {
       body.code = codes.TOKEN_NOT_EXISTS
       body.msg = types.TOKEN_NOT_EXISTS
       break
-    case types.POOL_NOT_EXIST:
-      body.code = codes.POOL_NOT_EXIST
-      body.msg = types.POOL_NOT_EXIST
-      break
     case types.TOKEN_ID_OR_NUMBER_IS_EMPTY:
       body.code = codes.TOKEN_ID_OR_NUMBER_IS_EMPTY
       body.msg = types.TOKEN_ID_OR_NUMBER_IS_EMPTY
       break
-    case types.NOT_ENOUGH_BALANCE:
-      body.code = codes.NOT_ENOUGH_BALANCE
-      body.msg = types.NOT_ENOUGH_BALANCE
-      break
     case types.THE_TOKEN_NOT_EXISTS:
       body.code = codes.THE_TOKEN_NOT_EXISTS
       body.msg = types.THE_TOKEN_NOT_EXISTS
+      break
+    case types.TOKEN_ID_OR_STAKE_NUMBER_IS_EMPTY:
+      body.code = codes.TOKEN_ID_OR_STAKE_NUMBER_IS_EMPTY
+      body.msg = types.TOKEN_ID_OR_STAKE_NUMBER_IS_EMPTY
+      break
+    case types.UID_OR_STAKE_ID_IS_EMPTY:
+      body.code = codes.UID_OR_STAKE_ID_IS_EMPTY
+      body.msg = types.UID_OR_STAKE_ID_IS_EMPTY
+      break
+    case types.UID_STAKE_ID_NOT_MATCHED:
+      body.code = codes.UID_STAKE_ID_NOT_MATCHED
+      body.msg = types.UID_STAKE_ID_NOT_MATCHED
+      break
+    case types.STAKE_ID_NOT_EXIST:
+      body.code = codes.STAKE_ID_NOT_EXIST
+      body.msg = types.STAKE_ID_NOT_EXIST
       break
     default:
       body.code = codes.INTERNAL_FAILURE

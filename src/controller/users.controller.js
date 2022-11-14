@@ -7,11 +7,6 @@ const usersService = require('../service/users.service')
 const sendCodeEmail = require('../utils/email')
 
 class UsersController {
-  async getAllUser(ctx, next) {
-    const result = await usersService.getAllUsers()
-    ctx.body = result
-  }
-
   async signUp(ctx, next) {
     const body = { code: null, body: null }
     const { username, password, email } = ctx.request.body

@@ -22,56 +22,13 @@ async function getTokenPool(fromTokenId, toTokenId) {
   return result[0][0]
 }
 
-async function getUserTokenBalance(uid) {
-  const statement = `
-    SELECT
-    tmp.uid, tmp.tokenId, tmp.balance, tmp.tokenName, tmp.tokenLogo, pool.fromTokenNumber, pool.toTokenNumber
-    FROM
-    (SELECT 
-    user_balance.uid, user_balance.tokenId, user_balance.balance, token.name as tokenName, token.logo as tokenLogo
-    FROM 
-    user_balance
-    LEFT JOIN
-    token
-    ON user_balance.tokenId = token.id) as tmp
-    LEFT JOIN
-    pool
-    ON tmp.tokenId = pool.fromTokenId
-    WHERE pool.toTokenId = 3 AND tmp.uid = ?`
-  const result = await connectionPool.execute(statement, [uid])
-  return result[0]
-}
-
-async function getStaked(uid) {
-  const statement = `
-  SELECT
-  user_stake.tokenId, token.name as tokenName, token.logo as tokenLogo, user_stake.tokenNum, user_stake.stakeTime
-  FROM
-  user_stake
-  LEFT JOIN
-  token
-  ON
-  user_stake.tokenId = token.id
-  WHERE
-  user_stake.uid = ?`
-  const result = await connectionPool.execute(statement, [uid])
-  return result[0]
-}
-
-async function getUserTokenBalanceByID(uid, tokenId) {
-  const statement =
-    'SELECT balance FROM user_balance WHERE uid = ? AND tokenId = ?'
-  const result = await connectionPool.execute(statement, [uid, tokenId])
-  return result[0][0]
-}
-
 async function swapToken(
   fromTokenId,
   fromTokenNumber,
   toTokenId,
   toTokenNumber,
   uid,
-  pool,
+  pool
 ) {
   // 更新流动性池子
   let statement =
@@ -124,12 +81,117 @@ async function swapToken(
   return true
 }
 
+async function stake(uid, tokenId, tokenNumber) {
+  let statement = 'SELECT APY FROM stake WHERE tokenId = ?'
+  let result = await connectionPool.execute(statement, [tokenId])
+  if (!result[0][0]) return false
+  const { APY } = result[0][0]
+  const stakeTime = new Date()
+
+  statement =
+    'INSERT INTO user_stake (uid, tokenId, tokenNum, stakeTime, APY) VALUES (?, ?, ?, ?, ?)'
+  result = await connectionPool.execute(statement, [
+    uid,
+    tokenId,
+    tokenNumber,
+    stakeTime,
+    APY,
+  ])
+  if (!result[0].affectedRows) return false
+
+  statement = 'SELECT balance FROM user_balance WHERE uid = ? AND tokenId = ?'
+  result = await connectionPool.execute(statement, [uid, tokenId])
+  if (!result[0][0]) return false
+
+  let { balance } = result[0][0]
+  balance -= tokenNumber
+  statement =
+    'UPDATE user_balance SET balance = ? WHERE uid = ? AND tokenId = ?'
+  result = await connectionPool.execute(statement, [balance, uid, tokenId])
+  if (!result[0].affectedRows) return false
+
+  return true
+}
+
+async function unstake(uid, tokenId, tokenNum, stakeId) {
+  let statement =
+    'SELECT balance FROM user_balance WHERE uid = ? AND tokenId = ?'
+  let result = await connectionPool.execute(statement, [uid, tokenId])
+  if (!result[0][0]) return false
+
+  let { balance } = result[0][0]
+  balance += tokenNum
+  statement =
+    'UPDATE user_balance SET balance = ? WHERE uid = ? AND tokenId = ?'
+  result = await connectionPool.execute(statement, [balance, uid, tokenId])
+  if (!result[0].affectedRows) return false
+
+  statement = 'DELETE FROM user_stake WHERE id = ?'
+  result = await connectionPool.execute(statement, [stakeId])
+  if (!result[0].affectedRows) return false
+
+  return true
+}
+
+async function getStaked(uid) {
+  const statement = `
+  SELECT
+  user_stake.id as stakeId, user_stake.tokenId, token.name as tokenName, token.logo as tokenLogo, user_stake.tokenNum, user_stake.stakeTime
+  FROM
+  user_stake
+  LEFT JOIN
+  token
+  ON
+  user_stake.tokenId = token.id
+  WHERE
+  user_stake.uid = ?`
+  const result = await connectionPool.execute(statement, [uid])
+  return result[0]
+}
+
+async function getStakedById(stakeId) {
+  const statement =
+    'SELECT id, uid, tokenId, tokenNum, stakeTime, APY FROM user_stake WHERE id = ?'
+  const result = await connectionPool.execute(statement, [stakeId])
+  return result[0]
+}
+
+async function getUserTokenBalance(uid) {
+  const statement = `
+    SELECT
+    tmp.uid, tmp.tokenId, tmp.balance, tmp.tokenName, tmp.tokenLogo, pool.fromTokenNumber, pool.toTokenNumber
+    FROM
+    (SELECT 
+    user_balance.uid, user_balance.tokenId, user_balance.balance, token.name as tokenName, token.logo as tokenLogo
+    FROM 
+    user_balance
+    LEFT JOIN
+    token
+    ON user_balance.tokenId = token.id) as tmp
+    LEFT JOIN
+    pool
+    ON tmp.tokenId = pool.fromTokenId
+    WHERE pool.toTokenId = 3 AND tmp.uid = ?`
+  const result = await connectionPool.execute(statement, [uid])
+  return result[0]
+}
+
+async function getUserTokenBalanceByID(uid, tokenId) {
+  const statement =
+    'SELECT balance FROM user_balance WHERE uid = ? AND tokenId = ?'
+  const result = await connectionPool.execute(statement, [uid, tokenId])
+  return result[0][0]
+}
+
 module.exports = {
+  stake,
+  unstake,
+  swapToken,
+  getStaked,
+  getStakedById,
   getTokenByID,
   getAllToken,
   getTokenPool,
   getUserTokenBalance,
   getUserTokenBalanceByID,
-  swapToken,
-  getStaked,
 }

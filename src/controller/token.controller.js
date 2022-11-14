@@ -4,6 +4,29 @@ const types = require('../app/constants')
 const tokenService = require('../service/token.service')
 
 class TokenController {
+  async preSwap(ctx, next) {
+    const { fromTokenNumber } = ctx.request.body
+
+    const body = {
+      code: codes.SUCCESS,
+      msg: types.SUCCESS,
+      data: {
+        time: null,
+        fromTokenNumber: fromTokenNumber,
+        willReceiveTokenNumber: null,
+      },
+    }
+    const { pool } = ctx.token
+    const product = pool.fromTokenNumber * pool.toTokenNumber
+    const poolToTokenNumber = product / (pool.fromTokenNumber - fromTokenNumber)
+
+    body.data.willReceiveTokenNumber = parseFloat(
+      (poolToTokenNumber - pool.toTokenNumber).toFixed(6)
+    )
+    body.data.time = new Date().getTime()
+    ctx.body = body
+  }
+
   async swap(ctx, next) {
     const body = { code: codes.SUCCESS, msg: types.SUCCESS }
     const { uid, fromTokenId, fromTokenNumber, toTokenId } = ctx.request.body
@@ -19,7 +42,7 @@ class TokenController {
       toTokenId,
       willReceiveTokenNumber,
       uid,
-      pool,
+      pool
     )
 
     if (!status) {
@@ -30,9 +53,48 @@ class TokenController {
     ctx.body = body
   }
 
-  async stake(ctx, next) {}
+  async stake(ctx, next) {
+    const body = {
+      code: codes.SUCCESS,
+      msg: types.SUCCESS,
+    }
+    const { uid, tokenId, tokenNumber } = ctx.request.body
 
-  async unstake(ctx, next) {}
+    const status = await tokenService.stake(uid, tokenId, tokenNumber)
+    if (!status) {
+      body.code = codes.FAILURE
+      body.msg = types.FAILURE
+    }
+
+    ctx.body = body
+  }
+
+  async unstake(ctx, next) {
+    const body = {
+      code: codes.SUCCESS,
+      msg: types.SUCCESS,
+    }
+    const { uid, stakeId } = ctx.request.body
+
+    const stake = await tokenService.getStakedById(stakeId)
+    const { tokenId, tokenNum, stakeTime, APY } = stake[0]
+    const stakedTime =
+      (Date.now() - new Date(stakeTime).getTime()) / (1000 * 60 * 60 * 24 * 365)
+    const totalTokenNum = tokenNum + tokenNum * APY * stakedTime
+    const status = await tokenService.unstake(
+      uid,
+      tokenId,
+      totalTokenNum,
+      stakeId
+    )
+
+    if (!status) {
+      body.code = codes.FAILURE
+      body.msg = codes.FAILURE
+    }
+
+    ctx.body = body
+  }
 
   async getStaked(ctx, next) {
     const body = {
@@ -93,29 +155,6 @@ class TokenController {
         })
       })
     }
-    ctx.body = body
-  }
-
-  async preSwap(ctx, next) {
-    const { fromTokenNumber } = ctx.request.body
-
-    const body = {
-      code: codes.SUCCESS,
-      msg: types.SUCCESS,
-      data: {
-        time: null,
-        fromTokenNumber: fromTokenNumber,
-        willReceiveTokenNumber: null,
-      },
-    }
-    const { pool } = ctx.token
-    const product = pool.fromTokenNumber * pool.toTokenNumber
-    const poolToTokenNumber = product / (pool.fromTokenNumber - fromTokenNumber)
-
-    body.data.willReceiveTokenNumber = parseFloat(
-      (poolToTokenNumber - pool.toTokenNumber).toFixed(6),
-    )
-    body.data.time = new Date().getTime()
     ctx.body = body
   }
 }

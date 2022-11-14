@@ -8,12 +8,10 @@ const usersRouter = new Router({
   prefix: '/users',
 })
 
-usersRouter.get('/get-all-user', usersController.getAllUser)
-
 usersRouter.post(
   '/update-pwd',
   usersMiddleware.verifyUpdatePwd,
-  usersController.updatePwd,
+  usersController.updatePwd
 )
 
 module.exports = usersRouter
