@@ -11,7 +11,13 @@ const usersRouter = new Router({
 usersRouter.post(
   '/update-pwd',
   usersMiddleware.verifyUpdatePwd,
-  usersController.updatePwd
+  usersController.updatePwd,
+)
+
+usersRouter.post(
+  '/get-user-info',
+  usersMiddleware.verifyGetUserInfo,
+  usersController.getUserInfo,
 )
 
 module.exports = usersRouter

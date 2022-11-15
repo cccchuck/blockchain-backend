@@ -32,10 +32,13 @@ class UsersController {
     const { uid } = await usersService.getUserByUsername(username)
     const token = jwt.sign({ uid }, SECRET, { expiresIn: '2h' })
 
-    ctx.set('Authorization', token)
     ctx.body = {
       code: codes.SUCCESS,
       msg: '登陆成功',
+      data: {
+        uid,
+        token,
+      },
     }
   }
 
@@ -85,6 +88,19 @@ class UsersController {
     }
 
     ctx.body = body
+  }
+
+  async getUserInfo(ctx, next) {
+    const { uid } = ctx.request.body
+    const user = await usersService.getUserByUID(uid)
+    ctx.body = {
+      code: codes.SUCCESS,
+      msg: types.SUCCESS,
+      data: {
+        uid,
+        username: user.username,
+      },
+    }
   }
 }
 

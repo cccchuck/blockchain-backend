@@ -7,6 +7,7 @@ const CODE_INCORRECT = '验证码错误'
 const CODE_EXPIRED = '验证码过期'
 const SEND_CODE_FREQRUNED = '发送验证码过于频繁，请稍后再试'
 
+const UID_IS_EMPTY = 'UID 不能为空'
 const USER_NOT_EXISTS = '用户不存在'
 const USER_ALREADY_EXISTS = '用户已存在'
 const OLDPASSWORD_ERROR = '旧密码错误'
@@ -46,6 +47,7 @@ module.exports = {
   POOL_NOT_EXIST,
   STAKE_ID_NOT_EXIST,
 
+  UID_IS_EMPTY,
   USER_NOT_EXISTS,
   USER_ALREADY_EXISTS,
   USERNAME_NOT_MATCH_EMAIL,
