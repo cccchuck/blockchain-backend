@@ -3,14 +3,29 @@ const { encryptPassword } = require('../utils/crypto')
 
 async function signUp(username, password, email) {
   password = encryptPassword(password)
-  const statement =
-    'INSERT INTO users (username, password, email) VALUES (?, ?, ?)'
-  const result = await connectionPool.execute(statement, [
-    username,
-    password,
-    email,
-  ])
-  return result[0]
+
+  const connection = await connectionPool.getConnection()
+  connection.beginTransaction()
+
+  try {
+    let statement =
+      'INSERT INTO users (username, password, email) VALUES (?, ?, ?)'
+    let result = await connection.execute(statement, [
+      username,
+      password,
+      email,
+    ])
+    let uid = result[0].insertId
+    statement =
+      'INSERT INTO user_balance (uid, tokenId, balance) VALUES (?, 2, 1), (?, 3, 1000)'
+    result = await connection.execute(statement, [uid, uid])
+    await connection.commit()
+    return true
+  } catch (error) {
+    console.log(error)
+    await connection.rollback()
+    return false
+  }
 }
 
 async function resetPwd(uid, password) {

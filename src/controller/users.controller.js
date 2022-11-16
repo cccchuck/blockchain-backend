@@ -8,20 +8,16 @@ const sendCodeEmail = require('../utils/email')
 
 class UsersController {
   async signUp(ctx, next) {
-    const body = { code: null, body: null }
+    const body = { code: null, msg: null }
     const { username, password, email } = ctx.request.body
-    const result = await usersService.signUp(username, password, email)
+    const status = await usersService.signUp(username, password, email)
 
-    if (result.length) {
-      body = {
-        code: codes.SUCCESS,
-        msg: '注册成功',
-      }
+    if (status) {
+      body.code = codes.SUCCESS
+      body.msg = types.SUCCESS
     } else {
-      body = {
-        code: codes.FAILURE,
-        msg: '注册失败',
-      }
+      body.code = codes.FAILURE
+      body.msg = types.FAILURE
     }
 
     ctx.body = body
