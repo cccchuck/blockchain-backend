@@ -28,7 +28,7 @@ async function swapToken(
   toTokenId,
   toTokenNumber,
   uid,
-  pool
+  pool,
 ) {
   const connection = await connectionPool.getConnection()
   await connection.beginTransaction()
@@ -162,10 +162,25 @@ async function unstake(uid, tokenId, tokenNum, stakeId) {
   }
 }
 
+async function getStake() {
+  const statement = `
+  SELECT
+  stake.tokenId, token.name as tokenName, token.logo as tokenLogo, stake.APY
+  FROM
+  stake
+  LEFT JOIN
+  token
+  ON
+  stake.tokenId = token.id
+  `
+  const result = await connectionPool.execute(statement)
+  return result[0]
+}
+
 async function getStaked(uid) {
   const statement = `
   SELECT
-  user_stake.id as stakeId, user_stake.tokenId, token.name as tokenName, token.logo as tokenLogo, user_stake.tokenNum, user_stake.stakeTime
+  user_stake.id as stakeId, user_stake.tokenId, token.name as tokenName, token.logo as tokenLogo, user_stake.tokenNum, user_stake.APY, user_stake.stakeTime
   FROM
   user_stake
   LEFT JOIN
@@ -216,6 +231,7 @@ module.exports = {
   stake,
   unstake,
   swapToken,
+  getStake,
   getStaked,
   getStakedById,
   getTokenByID,

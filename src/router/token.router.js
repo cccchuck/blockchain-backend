@@ -9,9 +9,15 @@ const tokenRouter = new Router({
 })
 
 tokenRouter.post(
+  '/get-token-list',
+  tokenMiddleware.verifyGetTokenList,
+  tokenController.getTokenList,
+)
+
+tokenRouter.post(
   '/pre-swap',
   tokenMiddleware.verifyPreSwap,
-  tokenController.preSwap
+  tokenController.preSwap,
 )
 
 tokenRouter.post('/swap', tokenMiddleware.verifySwap, tokenController.swap)
@@ -21,25 +27,31 @@ tokenRouter.post('/stake', tokenMiddleware.verifyStake, tokenController.stake)
 tokenRouter.post(
   '/unstake',
   tokenMiddleware.verifyUnstake,
-  tokenController.unstake
+  tokenController.unstake,
+)
+
+tokenRouter.post(
+  '/get-stake',
+  tokenMiddleware.verifyGetStake,
+  tokenController.getStake,
 )
 
 tokenRouter.post(
   '/get-staked',
   tokenMiddleware.verifyGetStaked,
-  tokenController.getStaked
+  tokenController.getStaked,
 )
 
 tokenRouter.post(
   '/get-token-balance',
   tokenMiddleware.verifyGetTokenBalance,
-  tokenController.getTokenBalance
+  tokenController.getTokenBalance,
 )
 
 tokenRouter.post(
   '/get-balance',
   tokenMiddleware.verifyGetBalance,
-  tokenController.getBalance
+  tokenController.getBalance,
 )
 
 module.exports = tokenRouter

@@ -3,6 +3,10 @@ const types = require('../app/constants')
 const usersService = require('../service/users.service')
 const tokenService = require('../service/token.service')
 
+async function verifyGetTokenList(ctx, next) {
+  await next()
+}
+
 async function verifyPreSwap(ctx, next) {
   const { fromTokenId, toTokenId, fromTokenNumber } = ctx.request.body
 
@@ -65,7 +69,7 @@ async function verifySwap(ctx, next) {
   // 4. 验证余额
   const userBalance = await tokenService.getUserTokenBalanceByID(
     uid,
-    fromTokenId
+    fromTokenId,
   )
   if (!userBalance || userBalance.balance < fromTokenNumber) {
     const err = new Error(types.NOT_ENOUGH_BALANCE)
@@ -102,6 +106,10 @@ async function verifyStake(ctx, next) {
     return
   }
 
+  await next()
+}
+
+async function verifyGetStake(ctx, next) {
   await next()
 }
 
@@ -168,7 +176,9 @@ module.exports = {
   verifyStake,
   verifyUnstake,
   verifyPreSwap,
+  verifyGetStake,
   verifyGetStaked,
   verifyGetBalance,
+  verifyGetTokenList,
   verifyGetTokenBalance,
 }

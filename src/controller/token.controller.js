@@ -4,6 +4,15 @@ const types = require('../app/constants')
 const tokenService = require('../service/token.service')
 
 class TokenController {
+  async getTokenList(ctx, next) {
+    const result = await tokenService.getAllToken()
+    ctx.body = {
+      code: codes.SUCCESS,
+      msg: types.SUCCESS,
+      data: result,
+    }
+  }
+
   async preSwap(ctx, next) {
     const { fromTokenNumber } = ctx.request.body
 
@@ -21,7 +30,7 @@ class TokenController {
     const poolToTokenNumber = product / (pool.fromTokenNumber - fromTokenNumber)
 
     body.data.willReceiveTokenNumber = parseFloat(
-      (poolToTokenNumber - pool.toTokenNumber).toFixed(6)
+      (poolToTokenNumber - pool.toTokenNumber).toFixed(6),
     )
     body.data.time = new Date().getTime()
     ctx.body = body
@@ -42,7 +51,7 @@ class TokenController {
       toTokenId,
       willReceiveTokenNumber,
       uid,
-      pool
+      pool,
     )
 
     if (!status) {
@@ -85,12 +94,27 @@ class TokenController {
       uid,
       tokenId,
       totalTokenNum,
-      stakeId
+      stakeId,
     )
 
     if (!status) {
       body.code = codes.FAILURE
       body.msg = codes.FAILURE
+    }
+
+    ctx.body = body
+  }
+
+  async getStake(ctx, next) {
+    const body = {
+      code: codes.SUCCESS,
+      msg: types.SUCCESS,
+      data: [],
+    }
+    const result = await tokenService.getStake()
+
+    if (result.length) {
+      body.data = result
     }
 
     ctx.body = body
