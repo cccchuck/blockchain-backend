@@ -89,7 +89,7 @@ async function verifySendCode(ctx, next) {
     }
   }
 
-  ctx.meta = { uid, exist: user !== undefined }
+  ctx.meta = { uid, exist: _user !== undefined }
   await next()
 }
 
