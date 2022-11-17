@@ -1,4 +1,3 @@
-const koaJwt = require('koa-jwt')
 const { koaBody } = require('koa-body')
 
 const { logger } = require('./middleware/logger')
@@ -15,7 +14,6 @@ app.use(cors)
 app.use(koaBody())
 app.use(unprotectedRouter.routes())
 app.use(unprotectedRouter.allowedMethods())
-app.use(koaJwt({ secret: SECRET }))
 app.use(auth)
 app.use(protectedRouter.routes())
 app.use(protectedRouter.allowedMethods())

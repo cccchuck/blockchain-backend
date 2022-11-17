@@ -106,6 +106,10 @@ function errorHandle(error, ctx) {
       body.code = codes.STAKE_ID_NOT_EXIST
       body.msg = types.STAKE_ID_NOT_EXIST
       break
+    case types.EXPIRED:
+      body.code = codes.EXPIRED
+      body.msg = types.EXPIRED
+      break
     default:
       body.code = codes.INTERNAL_FAILURE
       body.msg = types.INTERNAL_FAILURE

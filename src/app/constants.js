@@ -1,5 +1,6 @@
 const SUCCESS = '请求成功'
 const FAILURE = '请求出错'
+const EXPIRED = '登录过期'
 const FOBIDDEN = '非法请求'
 const INTERNAL_FAILURE = '服务器出错'
 
@@ -37,6 +38,7 @@ const EITHER_OLDPASSWORD_OR_NEWPASSWORD_IS_EMPTY = '旧密码或新密码为空'
 module.exports = {
   SUCCESS,
   FAILURE,
+  EXPIRED,
   FOBIDDEN,
   INTERNAL_FAILURE,
 

@@ -5,7 +5,15 @@ const types = require('../app/constants')
 async function verifyAuth(ctx, next) {
   const { authorization } = ctx.request.header
 
-  const { uid } = jwt.decode(authorization.slice(7))
+  const { uid, exp } = jwt.decode(authorization.slice(7))
+
+  // 登录过期
+  if (exp * 1000 < Date.now()) {
+    const err = new Error(types.EXPIRED)
+    ctx.app.emit('error', err, ctx)
+    return
+  }
+
   const bodyUid = ctx.request.body.uid
 
   // 非法请求
