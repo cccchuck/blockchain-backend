@@ -1,3 +1,4 @@
+// 错误处理中间件，通过 new Error 抛出错误，由该中间件统一处理错误信息和代码
 const types = require('./constants')
 const codes = require('./code')
 const { loggerError } = require('../middleware/logger')

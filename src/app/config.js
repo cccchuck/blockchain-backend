@@ -1,3 +1,5 @@
+// 通过 dotenv 库导入 .env 文件
+// 该文件对 .env 统一进行处理，降低耦合度
 const dotenv = require('dotenv')
 
 dotenv.config()

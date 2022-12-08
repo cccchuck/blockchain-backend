@@ -1,3 +1,6 @@
+/**
+ * 所有 token 请求中间件的封装
+ */
 const types = require('../app/constants')
 
 const usersService = require('../service/users.service')
@@ -69,7 +72,7 @@ async function verifySwap(ctx, next) {
   // 4. 验证余额
   const userBalance = await tokenService.getUserTokenBalanceByID(
     uid,
-    fromTokenId,
+    fromTokenId
   )
   if (!userBalance || userBalance.balance < fromTokenNumber) {
     const err = new Error(types.NOT_ENOUGH_BALANCE)

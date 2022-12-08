@@ -1,3 +1,6 @@
+/**
+ * 加密文件，对用户密码进行加密保存
+ */
 const bcryptjs = require('bcryptjs')
 
 const salt = bcryptjs.genSaltSync(10)

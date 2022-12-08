@@ -1,3 +1,4 @@
+// API 响应状态码统一管理
 const SUCCESS = 20000
 const FAILURE = 40000
 const EXPIRED = 40001

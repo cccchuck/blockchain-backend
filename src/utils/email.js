@@ -1,3 +1,4 @@
+// email 文件，控制发送邮件
 const nodemailer = require('nodemailer')
 const { EMAIL_USER, EMAIL_PASS } = require('../app/config')
 

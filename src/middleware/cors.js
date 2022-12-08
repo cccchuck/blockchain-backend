@@ -1,3 +1,7 @@
+/**
+ * 跨域中间件
+ * 通过该中间件设置跨域
+ */
 const setCors = async (ctx, next) => {
   ctx.set('Access-Control-Allow-Origin', 'http://localhost:5173')
   ctx.set(

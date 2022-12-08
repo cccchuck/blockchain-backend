@@ -1,3 +1,4 @@
+// API 响应信息统一管理
 const SUCCESS = '请求成功'
 const FAILURE = '请求出错'
 const EXPIRED = '登录过期'

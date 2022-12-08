@@ -1,3 +1,4 @@
+// 连接 mysql，考虑到高并发，采用连接池的方式去提供 mysql 服务
 const mysql2 = require('mysql2/promise')
 const {
   MYSQL_HOST,

@@ -1,3 +1,6 @@
+/**
+ * 所有 user 请求中间件的封装
+ */
 const types = require('../app/constants')
 
 const usersService = require('../service/users.service')

@@ -1,3 +1,7 @@
+/**
+ * 日志中间件
+ * 记录所有请求日志，便于定位错误及分析
+ */
 const log4js = require('log4js')
 log4js.configure({
   appenders: {
