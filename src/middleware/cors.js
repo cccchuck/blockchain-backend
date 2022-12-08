@@ -1,8 +1,8 @@
 const setCors = async (ctx, next) => {
-  ctx.set('Access-Control-Allow-Origin', 'http://10.131.1.115:5173')
+  ctx.set('Access-Control-Allow-Origin', 'http://localhost:5173')
   ctx.set(
     'Access-Control-Allow-Headers',
-    'Content-Type, Content-Length, Authorization, Accept',
+    'Content-Type, Content-Length, Authorization, Accept'
   )
   ctx.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
 
